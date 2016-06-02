@@ -1,0 +1,14 @@
+{
+    "nim.buildOnSave": false,
+    "nim.buildCommand": "c",
+    "nim.lintOnSave": true,
+    "nim.project": "main.nim",
+    "nim.licenseString": "# Copyright 2016.\n\n",
+    "runner.languageMap": {
+      "nim": "~/bin/vsc-runner"
+    },
+    "runner.extensionMap": {
+      "nim": "~/bin/vsc-runner",
+      "nims": "~/bin/vsc-runner"
+    }
+}
