@@ -20,7 +20,7 @@ type
         of ObjPair : head, tail : Node
     
     # defining the stack as an array 
-    StackArray = array[STACK_MAX, NodeObject]   
+    StackArray = array[STACK_MAX, Node]   
     
     VM = ref VMObject
     
@@ -30,12 +30,12 @@ type
         StackSize : int
 
 # this procedure pushes an object onto the stack
-proc push (vm: VM, obj : NodeObject) :  void =
+proc push (vm: VM, obj : Node) :  void =
     let location : int = vm.StackSize + 1
     vm.Stack[location] = obj
 
 # this procedure pops an object off of the stack   
-proc pop (vm: VM) : NodeObject =
+proc pop (vm: VM) : Node =
     result = vm.Stack[vm.StackSize]
     vm.StackSize = vm.StackSize - 1
 
@@ -44,10 +44,18 @@ proc newVm () : VM =
     var vm : VM
     result = vm
 
-proc newObject (vm : VM, objType : ObjectType) : NodeObject =
-    var node : NodeObject = NodeObject(kind: objType)
-    return node
+#proc newObject (objType : ObjectType) : Node =
+#    var node : Node = NodeObject(kind: objType)
+#    return node
+
+proc pushInt(vm: VM, val :int) : void =
+    let obj = Node(kind: ObjInt, intVal: val)
+    push(vm, obj)
+
+proc pushPair(vm: VM) : Node =
+    result =  Node(kind: ObjInt, head: pop(vm), tail: pop(vm))
 
 let vm : VM = newVm()
 
-push(vm, NodeObject(kind: ObjInt))
+pushInt(vm, 5)
+discard pushPair(vm)
