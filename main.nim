@@ -54,6 +54,7 @@ proc pushInt(vm: VM, val :int) : void =
 
 proc pushPair(vm: VM) : Node =
     result =  Node(kind: ObjInt, head: pop(vm), tail: pop(vm))
+    push(vm, result)
 
 let vm : VM = newVm()
 
