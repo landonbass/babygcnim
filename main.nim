@@ -1,5 +1,7 @@
 # port of http://journal.stuffwithstuff.com/2013/12/08/babys-first-garbage-collector/
 
+# nim has several gcs, and optionally none, so we will see where this learning project goes...
+
 # max size of array, may switch to seq later
 const STACK_MAX = 256
 
@@ -20,18 +22,20 @@ type
     # defining the stack as an array 
     StackArray = array[STACK_MAX, NodeObject]   
     
+    VM = ref VMObject
+    
     # wrapping the stack and associated objects
-    VM = object
+    VMObject  = object
         Stack : StackArray
         StackSize : int
 
 # this procedure pushes an object onto the stack
-proc push (vm: var VM, obj : NodeObject) :  void =
+proc push (vm: VM, obj : NodeObject) :  void =
     let location : int = vm.StackSize + 1
     vm.Stack[location] = obj
 
 # this procedure pops an object off of the stack   
-proc pop (vm: var VM) : NodeObject =
+proc pop (vm: VM) : NodeObject =
     result = vm.Stack[vm.StackSize]
     vm.StackSize = vm.StackSize - 1
 
@@ -40,7 +44,10 @@ proc newVm () : VM =
     var vm : VM
     result = vm
 
-#proc newObject (vm : VM, objType : ObjectType) : NodeObject =
-#    var node = NodeObject(objType)
+proc newObject (vm : VM, objType : ObjectType) : NodeObject =
+    var node : NodeObject = NodeObject(kind: objType)
+    return node
 
 let vm : VM = newVm()
+
+push(vm, NodeObject(kind: ObjInt))
