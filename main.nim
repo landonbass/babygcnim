@@ -37,20 +37,22 @@ type
 
 # this procedure pushes an object onto the stack
 proc push (vm: VM, obj : Node) :  void =
-    let location : int = vm.StackSize + 1
-    vm.Stack[location] = obj
-
+    vm.Stack[vm.StackSize] = obj
+    inc vm.StackSize
+    
 # this procedure pops an object off of the stack   
 proc pop (vm: VM) : Node =
+    dec vm.StackSize
     result = vm.Stack[vm.StackSize]
-    vm.StackSize = vm.StackSize - 1
 
 # wrapper for creating a new VM    
 proc newVm () : VM =
-    let vm : VM = VM()
+    let vm : VM   = VM()
+    vm.StackSize  = 0
+    vm.FirstNode  = nil
     vm.NumObjects = 0
     vm.MaxObjects = GC_THRESHOLD
-    result = vm
+    result        = vm
     
 proc mark(node: Node) : void =
     if node.marked: return
@@ -106,5 +108,5 @@ let vm : VM = newVm()
 
 for i in 0..100:
     vm.pushInt(i)
-#discard vm.pushPair
+discard vm.pushPair
 
