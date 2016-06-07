@@ -10,13 +10,15 @@ type
     ObjectType = enum
         ObjInt
         ObjPair
+    
+    IntVal = tuple[intVal: int, marked: bool]
      
     Node  = ref  NodeObject  
     
     # variant type representing each object
     NodeObject = object
         case kind: ObjectType
-        of ObjInt  : intVal     : int 
+        of ObjInt  : intVal     : IntVal
         of ObjPair : head, tail : Node
     
     # defining the stack as an array 
@@ -49,7 +51,7 @@ proc newVm () : VM =
 #    return node
 
 proc pushInt(vm: VM, val :int) : void =
-    let obj = Node(kind: ObjInt, intVal: val)
+    let obj = Node(kind: ObjInt, intVal: (intVal: val, marked: false))
     push(vm, obj)
 
 proc pushPair(vm: VM) : Node =
