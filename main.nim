@@ -11,14 +11,13 @@ type
         ObjInt
         ObjPair
     
-    IntVal = tuple[intVal: int, marked: bool]
-     
     Node  = ref  NodeObject  
     
     # variant type representing each object
     NodeObject = object
+        marked : bool
         case kind: ObjectType
-        of ObjInt  : intVal     : IntVal
+        of ObjInt  : intVal     : int
         of ObjPair : head, tail : Node
     
     # defining the stack as an array 
@@ -51,12 +50,23 @@ proc newVm () : VM =
 #    return node
 
 proc pushInt(vm: VM, val :int) : void =
-    let obj = Node(kind: ObjInt, intVal: (intVal: val, marked: false))
+    let obj = Node(kind: ObjInt, intVal: val)
     push(vm, obj)
 
 proc pushPair(vm: VM) : Node =
     result =  Node(kind: ObjInt, head: pop(vm), tail: pop(vm))
     push(vm, result)
+
+proc mark(node: Node) : void =
+    node.marked = true
+    
+    if node.kind == ObjPair:
+        mark node.head
+        mark node.tail
+
+proc markAll(vm: VM) : void =
+    for i in 0..vm.StackSize:
+        mark vm.Stack[i]
 
 let vm : VM = newVm()
 
