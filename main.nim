@@ -11,24 +11,24 @@ type
     # represents the type of the objects
     ObjectType = enum
         ObjInt
-        ObjPair
-    
-    Node  = ref  NodeObject  
+        ObjBool
+        ObjPair 
     
     # variant type representing each object
+    Node  = ref  NodeObject 
     NodeObject = object
         marked : bool
         next   : Node
         case kind: ObjectType
         of ObjInt  : intVal     : int
+        of ObjBool : boolVal    : bool
         of ObjPair : head, tail : Node
     
     # defining the stack as an array 
     StackArray = array[STACK_MAX, Node]   
     
-    VM = ref VMObject
-    
     # wrapping the stack and associated objects
+    VM = ref VMObject
     VMObject  = object
         Stack     : StackArray
         StackSize : int
@@ -98,15 +98,24 @@ proc pushInt(vm: VM, val :int) : void =
     obj.intVal = val
     push(vm, obj)
 
+proc pushBool(vm: VM, val: bool) : void =
+    let obj = newObject(vm, ObjBool)
+    obj.boolVal = val
+    push(vm, obj)
+
 proc pushPair(vm: VM) : Node =
     result =  newObject(vm, ObjPair)
     result.tail = pop(vm)
     result.head = pop(vm)
     push(vm, result)
 
-let vm : VM = newVm()
+when isMainModule:
+    let vm : VM = newVm()
 
-for i in 0..100:
-    vm.pushInt(i)
-discard vm.pushPair
+    for i in 0..100:
+        if i mod 2 == 0:
+            vm.pushInt(i)
+        else:
+            vm.pushBool(true)
+    discard vm.pushPair
 
